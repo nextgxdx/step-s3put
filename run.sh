@@ -18,7 +18,7 @@ fi
 
 info 'starting s3 upload'
 
-cd "/pipeline/output"
+cd $WERCKER_ROOT
 pwd
 ls -alh
 
