@@ -1,63 +1,34 @@
 #!/bin/sh
 set -e
 cd $HOME
-if [ ! -n "$WERCKER_S3PUT_KEY_ID" ]
+if [ ! -n "$WERCKER_S3PUT_AWSCLI_FILE" ]
 then
-    fail 'missing or empty option key_id, please check wercker.yml'
+  fail 'missing or empty option file, please check wercker.yml'
 fi
 
-if [ ! -n "$WERCKER_S3PUT_KEY_SECRET" ]
+if [ ! -n "$WERCKER_S3PUT_AWSCLI_BUCKET" ]
 then
-    fail 'missing or empty option key_secret, please check wercker.yml'
+  fail 'missing or empty option bucket, please check wercker.yml'
 fi
 
-if [ ! -n "$WERCKER_S3PUT_URL" ]
+if ! type aws &> /dev/null ;
 then
-    fail 'missing or empty option bucket_url, please check wercker.yml'
+  fail 'aws-cli not found, please run on a container with aws-cli installed'
 fi
-
-if [ ! -n "$WERCKER_S3PUT_FILE" ]
-then
-    fail 'missing or empty option source_file, please check wercker.yml'
-fi
-
-
-if ! type s3cmd &> /dev/null ;
-then
-    info 's3cmd not found, start installing it'
-    wget -O- -q http://s3tools.org/repo/deb-all/stable/s3tools.key | sudo apt-key add -
-    sudo wget -O/etc/apt/sources.list.d/s3tools.list http://s3tools.org/repo/deb-all/stable/s3tools.list
-    sudo apt-get update && sudo apt-get install -y s3cmd
-    success 's3cmd installed succesfully'
-else
-    info 'skip s3cmd install, command already available'
-    debug "type s3cmd: $(type s3cmd)"
-fi
-
-if [ -e '.s3cfg' ]
-then
-    warn '.s3cfg file already exists in home directory and will be overwritten'
-fi
-
-echo '[default]' > '.s3cfg'
-echo "access_key=$WERCKER_S3PUT_KEY_ID" >> .s3cfg
-echo "secret_key=$WERCKER_S3PUT_KEY_SECRET" >> .s3cfg
-debug "generated .s3cfg for key $WERCKER_S3PUT_KEY_ID"
 
 info 'starting s3 upload'
-
-# TODO make public an option
 
 cd "$WERCKER_ROOT"
 
 set +e
-debug "s3cmd put --acl-private --verbose '$WERCKER_S3PUT_FILE' '$WERCKER_S3PUT_URL'"
-sync_output=$(s3cmd sync --acl-private --verbose "$WERCKER_S3PUT_FILE" "$WERCKER_S3PUT_URL")
+for file in $WERCKER_S3PUT_AWSCLI_FILE ; do
+  debug "aws s3api put-object --bucket '$WERCKER_S3PUT_AWSCLI_BUCKET' --key '$WERCKER_S3PUT_AWSCLI_KEY_PREFIX$file' --body '$file' $WERCKER_S3PUT_AWSCLI_OPTIONS"
+  #sync_output=$(aws s3api put-object --bucket '$WERCKER_S3PUT_AWSCLI_BUCKET' --key '$WERCKER_S3PUT_AWSCLI_KEY_PREFIX$file' --body '$file' $WERCKER_S3PUT_AWSCLI_OPTIONS)
+  #if [[ $? -ne 0 ]];then
+  #  warning $sync_output
+  #  fail 'aws-cli failed';
+  #fi
+done
 
-if [[ $? -ne 0 ]];then
-    warning $sync_output
-    fail 's3cmd failed';
-else
-    success 'finished s3 upload';
-fi
+success 'finished s3 upload';
 set -e
