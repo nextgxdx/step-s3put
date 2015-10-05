@@ -18,11 +18,12 @@ fi
 
 info 'starting s3 upload'
 
-cd "$WERCKER_ROOT"
+cd "$WERCKER_OUTPUT_DIR"
 
 set +e
 for file in $WERCKER_S3PUT_AWSCLI_FILE ; do
-  debug "aws s3api put-object --bucket '$WERCKER_S3PUT_AWSCLI_BUCKET' --key '$WERCKER_S3PUT_AWSCLI_KEY_PREFIX$file' --body '$file' $WERCKER_S3PUT_AWSCLI_OPTIONS"
+  fname=$(basename $file)
+  debug "aws s3api put-object --bucket '$WERCKER_S3PUT_AWSCLI_BUCKET' --key '$WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname' --body '$file' $WERCKER_S3PUT_AWSCLI_OPTIONS"
   #sync_output=$(aws s3api put-object --bucket '$WERCKER_S3PUT_AWSCLI_BUCKET' --key '$WERCKER_S3PUT_AWSCLI_KEY_PREFIX$file' --body '$file' $WERCKER_S3PUT_AWSCLI_OPTIONS)
   #if [[ $? -ne 0 ]];then
   #  warning $sync_output
