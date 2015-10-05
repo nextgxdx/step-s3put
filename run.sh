@@ -19,6 +19,8 @@ fi
 info 'starting s3 upload'
 
 cd "/pipeline/output"
+pwd
+ls -alh
 
 set +e
 for file in $WERCKER_S3PUT_AWSCLI_FILE ; do
