@@ -18,7 +18,7 @@ fi
 
 info 'starting s3 upload'
 
-cd "$WERCKER_ROOT/deploy"
+cd "/pipeline/output"
 
 set +e
 for file in $WERCKER_S3PUT_AWSCLI_FILE ; do
