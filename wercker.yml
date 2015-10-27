@@ -4,6 +4,11 @@ build:
     - validate-wercker-step
 
     - script:
+      name: install unzip
+      code: |
+        sudo apt-get install unzip
+
+    - script:
         name: install awscli
         code: |
           curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
