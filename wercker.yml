@@ -1,6 +1,8 @@
 box: wercker/default
 build:
   steps:
+    - validate-wercker-step
+
     - script:
         name: install awscli
         code: |
@@ -9,6 +11,10 @@ build:
     - script:
         name: version
         code: |
-          aws --version
+          echo `aws --version`
 
-    - validate-wercker-step
+    - script:
+        name: prepare output
+        code: |
+          rm -rf $WERCKER_ROOT/.git
+          rm -f $WERCKER_ROOT/.gitignore
