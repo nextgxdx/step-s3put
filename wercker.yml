@@ -13,7 +13,7 @@ build:
         name: install awscli
         code: |
           curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip > /tmp/awscli-bundle.zip
-          unzip /tmp/awscli-bundle.zip -d /tmp/awscli-bundle
+          unzip /tmp/awscli-bundle.zip -d /tmp
           sudo /tmp/awscli-bundle/install -i $WERCKER_ROOT/lib/aws -b $WERCKER_ROOT/aws
 
     - script:
