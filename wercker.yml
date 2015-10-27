@@ -12,14 +12,14 @@ build:
     - script:
         name: install awscli
         code: |
-          curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-          unzip awscli-bundle.zip
-          sudo ./awscli-bundle/install -i $WERCKER_ROOT/lib/aws -b $WERCKER_ROOT/aws
+          curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip > /tmp/awscli-bundle.zip
+          unzip /tmp/awscli-bundle.zip
+          sudo /tmp/awscli-bundle/install -i $WERCKER_ROOT/lib/aws -b $WERCKER_ROOT/aws
 
     - script:
         name: version
         code: |
-          echo `$WERCKER_ROOT/aws --version`
+          $WERCKER_ROOT/aws --version
 
     - script:
         name: prepare output
