@@ -1,4 +1,14 @@
 box: wercker/default
-build: 
+build:
   steps:
+    - script:
+      name: install awscli
+      code: |
+        sudo pip install awscli
+
+    - script:
+        name: version
+        code: |
+          aws --version
+
     - validate-wercker-step
