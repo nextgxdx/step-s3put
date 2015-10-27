@@ -1,4 +1,6 @@
 #!/bin/sh
+
+AWS_BIN="$WERCKER_ROOT/aws"
 set -e
 cd $HOME
 if [ ! -n "$WERCKER_S3PUT_AWSCLI_FILE" ]
@@ -27,8 +29,8 @@ then
     if [ -f $file ];
     then
       fname=$(basename $file)
-      debug "aws s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $file $WERCKER_S3PUT_AWSCLI_OPTIONS"
-      sync_output=$(aws s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $file $WERCKER_S3PUT_AWSCLI_OPTIONS)
+      debug "$AWS_BIN s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $file $WERCKER_S3PUT_AWSCLI_OPTIONS"
+      sync_output=$($AWS_BIN s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $file $WERCKER_S3PUT_AWSCLI_OPTIONS)
       if [[ $? -ne 0 ]];then
         debug $sync_output
         fail 'aws-cli failed';
@@ -39,8 +41,8 @@ elif [ -f $WERCKER_S3PUT_AWSCLI_FILE ] ;
 then
   cd $WERCKER_ROOT
   fname=$(basename $WERCKER_S3PUT_AWSCLI_FILE)
-  debug "aws s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $WERCKER_S3PUT_AWSCLI_FILE $WERCKER_S3PUT_AWSCLI_OPTIONS"
-  sync_output=$(aws s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $WERCKER_S3PUT_AWSCLI_FILE $WERCKER_S3PUT_AWSCLI_OPTIONS)
+  debug "$AWS_BIN s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $WERCKER_S3PUT_AWSCLI_FILE $WERCKER_S3PUT_AWSCLI_OPTIONS"
+  sync_output=$($AWS_BIN s3api put-object --bucket $WERCKER_S3PUT_AWSCLI_BUCKET --key $WERCKER_S3PUT_AWSCLI_KEY_PREFIX$fname --body $WERCKER_S3PUT_AWSCLI_FILE $WERCKER_S3PUT_AWSCLI_OPTIONS)
   if [[ $? -ne 0 ]];then
     debug $sync_output
     fail 'aws-cli failed';
