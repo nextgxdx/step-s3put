@@ -6,6 +6,7 @@ build:
     - script:
         name: install unzip
         code: |
+          sudo apt-get update
           sudo apt-get install unzip
 
     - script:
