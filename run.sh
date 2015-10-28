@@ -1,6 +1,7 @@
 #!/bin/sh
 
 AWS_BIN="$WERCKER_ROOT/aws"
+
 set -e
 cd $HOME
 if [ ! -n "$WERCKER_S3PUT_AWSCLI_FILE" ]

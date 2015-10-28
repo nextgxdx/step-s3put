@@ -4,25 +4,34 @@ build:
     - validate-wercker-step
 
     - script:
-        name: install unzip
+        name: setup
+        code: |
+          export BUILD_DIR="/tmp/awscli"
+
+    - script:
+        name: install:unzip
         code: |
           sudo apt-get update
           sudo apt-get install unzip
 
     - script:
-        name: install awscli
+        name: install:pyinstaller
+        code: |
+          sudo pip install pyinstaller
+
+    - script:
+        name: install:awscli
         code: |
           curl -L https://s3.amazonaws.com/aws-cli/awscli-bundle.zip > /tmp/awscli-bundle.zip
           unzip /tmp/awscli-bundle.zip -d /tmp
-          sudo /tmp/awscli-bundle/install -i $WERCKER_ROOT/lib/aws -b $WERCKER_ROOT/aws
+          sudo /tmp/awscli-bundle/install -i $BUILD_DIR
+
+    - script:
+        name: package:awscli
+        code: |
+          pyinstaller -F --name=aws --distpath=$WERCKER_OUTPUT_DIR $BUILD_DIR/bin/aws
 
     - script:
         name: version
         code: |
-          $WERCKER_ROOT/aws --version
-
-    - script:
-        name: prepare output
-        code: |
-          rm -rf $WERCKER_ROOT/.git
-          rm -f $WERCKER_ROOT/.gitignore
+          $WERCKER_OUTPUT_DIR/aws --version
