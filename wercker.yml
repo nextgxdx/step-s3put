@@ -29,7 +29,8 @@ build:
     - script:
         name: package:awscli
         code: |
-          pyinstaller --log-level=INFO -F --name=aws --distpath=$WERCKER_OUTPUT_DIR $BUILD_DIR/bin/aws
+          ADDITIONAL_PATHS="$BUILD_DIR/lib/python2.7/site-packages"
+          pyinstaller --log-level=INFO --paths=$ADDITIONAL_PATHS -F --name=aws --distpath=$WERCKER_OUTPUT_DIR $BUILD_DIR/bin/aws
 
     - script:
         name: version
